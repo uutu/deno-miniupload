@@ -20,6 +20,7 @@ const upLoadFile = async ({ request, response }) => {
 
   await fileService.upLoadSentFile(fileContents, base64Encoded);
   
+  response.body = "Not implemented yet";
 };
 
 export { viewForm, upLoadFile };
