@@ -23,4 +23,14 @@ const upLoadSentFile = async (fileDetails, base64Encoded, hash) => {
   );
 };
 
-export { lastUploadedId, upLoadSentFile };
+const downloadFileId = async (id, hash) => {
+  const res = await executeQuery("SELECT * FROM miniupload_files WHERE id = $id", {
+    id: id,
+  });
+
+  const obj = res.rows[0];
+
+  return obj;
+};
+
+export { lastUploadedId, upLoadSentFile, downloadFileId };
