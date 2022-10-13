@@ -4,5 +4,6 @@ import * as formController from "./controllers/formController.js";
 const router = new Router();
 
 router.get("/", formController.viewForm);
+router.post("/", formController.upLoadFile);
 
 export { router };
