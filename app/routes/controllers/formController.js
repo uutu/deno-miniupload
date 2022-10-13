@@ -37,22 +37,28 @@ const downloadFile = async ({ request, response }) => {
   const id = params.get("id");
   const password = params.get("password");
 
-  // verifies the password sent by the user
-  const hash = await bcrypt.hash(password);
+  // try-catch to remove crashing error with faulty data types
+  try {
+    // verifies the password sent by the user
+    const hash = await bcrypt.hash(password);
 
-  const result = await fileService.downloadFileId(id);
+    const result = await fileService.downloadFileId(id);
 
-  if (result) {
-    const pwMatch = await bcrypt.compare(password, result.password);
-    if (pwMatch) {
-      response.headers.set("Content-Type", result.type);
-      const arr = base64.toUint8Array(result.data);
-      response.headers.set("Content-Length", arr.length);
-      response.body = arr;
+    if (result) {
+      const pwMatch = await bcrypt.compare(password, result.password);
+      if (pwMatch) {
+        response.headers.set("Content-Type", result.type);
+        const arr = base64.toUint8Array(result.data);
+        response.headers.set("Content-Length", arr.length);
+        response.body = arr;
+      } else {
+        response.status = 401;
+      }
     } else {
       response.status = 401;
     }
-  } else {
+  } catch (e) {
+    console.log(e);
     response.status = 401;
   }
 };
