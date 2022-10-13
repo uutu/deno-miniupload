@@ -23,7 +23,7 @@ const upLoadFile = async ({ request, response }) => {
   const pw = `${Math.floor(100000 * Math.random())}`
   const hash = await bcrypt.hash(pw);
 
-  await fileService.upLoadSentFile(fileContents, base64Encoded, hash);
+  await fileService.upLoadSentFile(fileDetails, base64Encoded, hash);
 
   response.body = pw;
 };
