@@ -26,7 +26,32 @@ const upLoadFile = async ({ request, response }) => {
 
   await fileService.upLoadSentFile(fileDetails, base64Encoded, hash);
 
+  // Returns the generated password for said file
   response.body = pw;
 };
 
-export { viewForm, upLoadFile };
+const downloadFile = async ({ request, response }) => {
+  const body = request.body({ type: "form" });
+  const params = await body.value;
+
+  const id = params.get("id");
+  const password = params.get("password");
+
+  // verifies the password sent by the user
+  const hash = await bcrypt.hash(password);
+
+  const result = await fileService.downloadFileId(id);
+
+  const pwMatch = await bcrypt.compare(password, result.password);
+
+  if (result && pwMatch) {
+    response.headers.set("Content-Type", result.type);
+    const arr = base64.toUint8Array(result.data);
+    response.headers.set("Content-Length", arr.length);
+    response.body = arr;
+  } else {
+    response.status = 401;
+  }
+};
+
+export { viewForm, upLoadFile, downloadFile };
