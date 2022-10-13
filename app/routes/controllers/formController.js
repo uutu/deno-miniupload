@@ -1,6 +1,6 @@
 import * as fileService from "../../services/fileService.js";
 import * as base64 from "https://deno.land/x/base64@v0.2.1/mod.ts";
-import * as bcrypt from "https://deno.land/x/bcrypt@v0.2.4/mod.ts";
+import * as bcrypt from "https://deno.land/x/bcrypt@v0.4.0/mod.ts";
 
 const viewForm = async ({ render }) => {
   const lastId = await fileService.lastUploadedId();
@@ -42,13 +42,16 @@ const downloadFile = async ({ request, response }) => {
 
   const result = await fileService.downloadFileId(id);
 
-  const pwMatch = await bcrypt.compare(password, result.password);
-
-  if (result && pwMatch) {
-    response.headers.set("Content-Type", result.type);
-    const arr = base64.toUint8Array(result.data);
-    response.headers.set("Content-Length", arr.length);
-    response.body = arr;
+  if (result) {
+    const pwMatch = await bcrypt.compare(password, result.password);
+    if (pwMatch) {
+      response.headers.set("Content-Type", result.type);
+      const arr = base64.toUint8Array(result.data);
+      response.headers.set("Content-Length", arr.length);
+      response.body = arr;
+    } else {
+      response.status = 401;
+    }
   } else {
     response.status = 401;
   }
