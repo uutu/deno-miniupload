@@ -10,7 +10,9 @@ Launching the starts the Deno application, a PostgreSQL server, and a database m
 + POST request to the "/files" path of the application, where the POST request contains the password and the database id of a file, the application retrieves the file with the given id from the database and verifies that the password sent by the user matches the one stored into the database. Upon a succesful verification the file is sent as a response to the user
 
 ### Notes
-Some ```form-data```-types cause errors. No explicit checks for data types added to the database.
+Some ```form-data```-types cause errors. No explicit checks for data types added to the database, but errors are caught.
+Could add another controller&service for a more ideal structure -> services/fileService.js & routes/controllers/fileController.js to decouple responsibilities.
+
 ## Running
 
 The application uses Docker Compose. To run the application, run the command ```docker-compose up``` while in the directory that contains the ```docker-compose.yml``` file.
