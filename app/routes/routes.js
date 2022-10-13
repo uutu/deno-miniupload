@@ -5,5 +5,6 @@ const router = new Router();
 
 router.get("/", formController.viewForm);
 router.post("/", formController.upLoadFile);
+router.post("/files", formController.downloadFile);
 
 export { router };
